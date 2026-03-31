@@ -23,3 +23,12 @@ export const actualizarCancion = (id, datosActualizados) => {
     canciones[index] = Object.assign(Object.assign({}, canciones[index]), datosActualizados);
     console.log("Canción actualizada correctamente");
 };
+export const eliminarCancion = (id) => {
+    const index = canciones.findIndex(c => c.id === id);
+    if (index === -1) {
+        console.log("Canción no encontrada");
+        return;
+    }
+    canciones.splice(index, 1);
+    console.log("Canción eliminada correctamente");
+};

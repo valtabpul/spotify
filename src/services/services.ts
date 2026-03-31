@@ -35,3 +35,15 @@ export const actualizarCancion = (id: number, datosActualizados: Partial<Omit<Ca
 
     console.log("Canción actualizada correctamente");
 }
+
+export const eliminarCancion = (id: number): void => {
+    const index = canciones.findIndex(c => c.id === id);
+
+    if (index === -1) {
+        console.log("Canción no encontrada");
+        return;
+    }
+
+    canciones.splice(index, 1);
+    console.log("Canción eliminada correctamente");
+}
