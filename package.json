@@ -1,0 +1,27 @@
+{
+  "name": "spotify",
+  "version": "1.0.0",
+  "description": "Este proyecto es un CRUD básico que interactúa con la API de Spotify. Está desarrollado en TypeScript, utilizando módulos ES, así como types e interfaces para una mejor estructura y tipado del código.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valtabpul/spotify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/valtabpul/spotify/issues"
+  },
+  "homepage": "https://github.com/valtabpul/spotify#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2"
+  }
+}
