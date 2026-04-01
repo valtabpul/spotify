@@ -1,5 +1,5 @@
 import { actualizarCancion, agregarCancion, obtenerCatalogoCanciones, eliminarCancion } from "./services.js";
-import type { Canciones } from "../models/models.js";
+import { Modelos } from "../models/models.js";
 import readline from "readline";
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -12,19 +12,39 @@ function pregunta(texto: string): Promise<string> {
     });
 }
 
-async function agregarCancionMenu() {
+const generosDisponibles: Modelos.Genero[] = ["pop", "hip hop", "salsa", "bachata", "vallenato", "reggaeton"];
+const idiomasDisponibles: Modelos.Idioma[] = ["Español", "Ingles", "Coreano", "Portugués", "Turco"];
+
+function parseNumero(valor: string): number {
+    const numero = Number(valor);
+    return Number.isNaN(numero) ? 0 : numero;
+}
+
+function normalizarGenero(valor: string): Modelos.Genero {
+    const encontrado = generosDisponibles.find((g) => g === valor);
+    return encontrado ?? "pop";
+}
+
+function normalizarIdioma(valor: string): Modelos.Idioma {
+    const encontrado = idiomasDisponibles.find((i) => i === valor);
+    return encontrado ?? "Español";
+}
+
+async function agregarCancionMenu(): Promise<void> {
     console.log("\n--- Agregar Nueva Canción ---");
-    const id = parseInt(await pregunta("ID: "));
+    const id = parseNumero(await pregunta("ID: "));
     const nombre = await pregunta("Nombre: ");
-    const genero = await pregunta("Género (pop/hip hop/salsa/bachata/vallenato/reggaeton): ") as any;
-    const duración = parseInt(await pregunta("Duración (segundos): "));
+    const generoTexto = await pregunta("Género (pop/hip hop/salsa/bachata/vallenato/reggaeton): ");
+    const genero = normalizarGenero(generoTexto);
+    const duración = parseNumero(await pregunta("Duración (segundos): "));
     const disponibilidad = (await pregunta("¿Disponible? (si/no): ")).toLowerCase() === "si";
-    const idioma = await pregunta("Idioma (Español/Ingles/Coreano/Portugués/Turco): ") as any;
+    const idiomaTexto = await pregunta("Idioma (Español/Ingles/Coreano/Portugués/Turco): ");
+    const idioma = normalizarIdioma(idiomaTexto);
     const artista = await pregunta("Artista: ");
-    const reproduciones = parseInt(await pregunta("Reproducciones: ")) || 0;
+    const reproduciones = parseNumero(await pregunta("Reproducciones: "));
     const favoritos = (await pregunta("¿Favorito? (si/no): ")).toLowerCase() === "si";
 
-    const nuevaCancion: Canciones = {
+    const nuevaCancion = new Modelos.Cancion(
         id,
         nombre,
         genero,
@@ -32,22 +52,22 @@ async function agregarCancionMenu() {
         disponibilidad,
         idioma,
         artista,
-        fechaLanzamiento: new Date(),
+        new Date(),
         reproduciones,
         favoritos
-    };
+    );
 
     agregarCancion(nuevaCancion);
 }
 
-async function actualizarCancionMenu() {
+async function actualizarCancionMenu(): Promise<void> {
     console.log("\n--- Actualizar Canción ---");
-    const id = parseInt(await pregunta("ID de la canción: "));
+    const id = parseNumero(await pregunta("ID de la canción: "));
     console.log("Ingresa los datos a actualizar (deja vacío para no cambiar):");
     const nombre = await pregunta("Nuevo nombre: ");
     const artista = await pregunta("Nuevo artista: ");
 
-    const datos: any = {};
+    const datos: Partial<Omit<Modelos.CancionDatos, "id">> = {};
     if (nombre) datos.nombre = nombre;
     if (artista) datos.artista = artista;
 
@@ -58,13 +78,13 @@ async function actualizarCancionMenu() {
     }
 }
 
-async function eliminarCancionMenu() {
+async function eliminarCancionMenu(): Promise<void> {
     console.log("\n--- Eliminar Canción ---");
-    const id = parseInt(await pregunta("ID de la canción a eliminar: "));
+    const id = parseNumero(await pregunta("ID de la canción a eliminar: "));
     eliminarCancion(id);
 }
 
-async function mostrarMenu() {
+async function mostrarMenu(): Promise<void> {
     console.log("\n=== CRUD Canciones ===");
     console.log("1. Ver todas las canciones");
     console.log("2. Agregar una canción");

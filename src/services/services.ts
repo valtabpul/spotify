@@ -1,14 +1,12 @@
-import  { usuarios,canciones,podcasts} from "../data/data.js";
+import { canciones } from "../data/data.js";
+import { Modelos } from "../models/models.js";
 
-import type { Canciones } from "../models/models.js";
-
-export const obtenerCatalogoCanciones = (): Canciones[] => {
+export const obtenerCatalogoCanciones = (): Modelos.Cancion[] => {
     return [...canciones];
 }
-
 //agregar funcion que me permita insertar un nuevo objeto
-export const agregarCancion = (nuevaCancion: Canciones): void => {
-    const existe = canciones.some(p => p.id === nuevaCancion.id);
+export const agregarCancion = (nuevaCancion: Modelos.Cancion): void => {
+    const existe = canciones.some((p) => p.id === nuevaCancion.id);
 
     if (existe) {
         console.log("Cancion ya existente ");
@@ -20,24 +18,23 @@ export const agregarCancion = (nuevaCancion: Canciones): void => {
     }
 }
 
-export const actualizarCancion = (id: number, datosActualizados: Partial<Omit<Canciones, 'id'>>): void => {
-    const index = canciones.findIndex(c => c.id === id);
+export const actualizarCancion = (
+    id: number,
+    datosActualizados: Partial<Omit<Modelos.CancionDatos, "id">>
+): void => {
+    const cancion = canciones.find((c) => c.id === id);
 
-    if (index === -1) {
+    if (!cancion) {
         console.log("Canción no encontrada");
         return;
     }
-
-    canciones[index] = {
-        ...canciones[index],
-        ...datosActualizados
-    } as Canciones;
+    Object.assign(cancion, datosActualizados);
 
     console.log("Canción actualizada correctamente");
 }
 
 export const eliminarCancion = (id: number): void => {
-    const index = canciones.findIndex(c => c.id === id);
+    const index = canciones.findIndex((c) => c.id === id);
 
     if (index === -1) {
         console.log("Canción no encontrada");
