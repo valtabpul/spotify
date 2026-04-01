@@ -4,7 +4,7 @@ export const obtenerCatalogoCanciones = () => {
 };
 //agregar funcion que me permita insertar un nuevo objeto
 export const agregarCancion = (nuevaCancion) => {
-    const existe = canciones.some(p => p.id === nuevaCancion.id);
+    const existe = canciones.some((p) => p.id === nuevaCancion.id);
     if (existe) {
         console.log("Cancion ya existente ");
         return;
@@ -15,11 +15,20 @@ export const agregarCancion = (nuevaCancion) => {
     }
 };
 export const actualizarCancion = (id, datosActualizados) => {
-    const index = canciones.findIndex(c => c.id === id);
+    const cancion = canciones.find((c) => c.id === id);
+    if (!cancion) {
+        console.log("Canción no encontrada");
+        return;
+    }
+    Object.assign(cancion, datosActualizados);
+    console.log("Canción actualizada correctamente");
+};
+export const eliminarCancion = (id) => {
+    const index = canciones.findIndex((c) => c.id === id);
     if (index === -1) {
         console.log("Canción no encontrada");
         return;
     }
-    canciones[index] = Object.assign(Object.assign({}, canciones[index]), datosActualizados);
-    console.log("Canción actualizada correctamente");
+    canciones.splice(index, 1);
+    console.log("Canción eliminada correctamente");
 };
