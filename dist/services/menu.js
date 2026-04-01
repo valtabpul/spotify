@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { actualizarCancion, agregarCancion, obtenerCatalogoCanciones, eliminarCancion } from "./services.js";
+import { Modelos } from "../models/models.js";
 import readline from "readline";
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 function pregunta(texto) {
@@ -17,37 +18,42 @@ function pregunta(texto) {
         });
     });
 }
+const generosDisponibles = ["pop", "hip hop", "salsa", "bachata", "vallenato", "reggaeton"];
+const idiomasDisponibles = ["Español", "Ingles", "Coreano", "Portugués", "Turco"];
+function parseNumero(valor) {
+    const numero = Number(valor);
+    return Number.isNaN(numero) ? 0 : numero;
+}
+function normalizarGenero(valor) {
+    const encontrado = generosDisponibles.find((g) => g === valor);
+    return encontrado !== null && encontrado !== void 0 ? encontrado : "pop";
+}
+function normalizarIdioma(valor) {
+    const encontrado = idiomasDisponibles.find((i) => i === valor);
+    return encontrado !== null && encontrado !== void 0 ? encontrado : "Español";
+}
 function agregarCancionMenu() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("\n--- Agregar Nueva Canción ---");
-        const id = parseInt(yield pregunta("ID: "));
+        const id = parseNumero(yield pregunta("ID: "));
         const nombre = yield pregunta("Nombre: ");
-        const genero = yield pregunta("Género (pop/hip hop/salsa/bachata/vallenato/reggaeton): ");
-        const duración = parseInt(yield pregunta("Duración (segundos): "));
+        const generoTexto = yield pregunta("Género (pop/hip hop/salsa/bachata/vallenato/reggaeton): ");
+        const genero = normalizarGenero(generoTexto);
+        const duración = parseNumero(yield pregunta("Duración (segundos): "));
         const disponibilidad = (yield pregunta("¿Disponible? (si/no): ")).toLowerCase() === "si";
-        const idioma = yield pregunta("Idioma (Español/Ingles/Coreano/Portugués/Turco): ");
+        const idiomaTexto = yield pregunta("Idioma (Español/Ingles/Coreano/Portugués/Turco): ");
+        const idioma = normalizarIdioma(idiomaTexto);
         const artista = yield pregunta("Artista: ");
-        const reproduciones = parseInt(yield pregunta("Reproducciones: ")) || 0;
+        const reproduciones = parseNumero(yield pregunta("Reproducciones: "));
         const favoritos = (yield pregunta("¿Favorito? (si/no): ")).toLowerCase() === "si";
-        const nuevaCancion = {
-            id,
-            nombre,
-            genero,
-            duración,
-            disponibilidad,
-            idioma,
-            artista,
-            fechaLanzamiento: new Date(),
-            reproduciones,
-            favoritos
-        };
+        const nuevaCancion = new Modelos.Cancion(id, nombre, genero, duración, disponibilidad, idioma, artista, new Date(), reproduciones, favoritos);
         agregarCancion(nuevaCancion);
     });
 }
 function actualizarCancionMenu() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("\n--- Actualizar Canción ---");
-        const id = parseInt(yield pregunta("ID de la canción: "));
+        const id = parseNumero(yield pregunta("ID de la canción: "));
         console.log("Ingresa los datos a actualizar (deja vacío para no cambiar):");
         const nombre = yield pregunta("Nuevo nombre: ");
         const artista = yield pregunta("Nuevo artista: ");
@@ -67,7 +73,7 @@ function actualizarCancionMenu() {
 function eliminarCancionMenu() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("\n--- Eliminar Canción ---");
-        const id = parseInt(yield pregunta("ID de la canción a eliminar: "));
+        const id = parseNumero(yield pregunta("ID de la canción a eliminar: "));
         eliminarCancion(id);
     });
 }

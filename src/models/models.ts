@@ -59,7 +59,7 @@ export namespace Modelos {
             public email: string,
             public telefono: number,
             public pais: string
-        ) {}
+        ) { }
     }
 
     export class Cancion implements CancionDatos {
@@ -74,7 +74,7 @@ export namespace Modelos {
             public fechaLanzamiento: Date,
             public reproduciones: number,
             public favoritos: boolean
-        ) {}
+        ) { }
 
         @logMetodo
         resumen(): string {
@@ -94,7 +94,7 @@ export namespace Modelos {
             public fechaLanzamiento: Date,
             public reproduciones: number,
             public seguir: boolean
-        ) {}
+        ) { }
     }
 }
 
